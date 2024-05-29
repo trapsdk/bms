@@ -1,0 +1,6 @@
+.root{
+    -fx-background-color: linear-gradient(to right, #737EE6, #73B4E6);
+}
+.button{
+    -fx-font-family: Calibri;
+}
