@@ -4,3 +4,15 @@
 .button{
     -fx-font-family: Calibri;
 }
+.menu-bar{
+    -fx-background-color: linear-gradient(to left, #737EE6, #73B4E6);
+    -fx-border-color: rgb(128, 128, 128);
+}
+.menu{
+    -fx-text-fill: white;
+    -fx-font-family: Calibri;
+}
+VBox{
+    -fx-background-color: linear-gradient( #737EE6, #73B4E6);
+    -fx-border-color: rgb(128, 128, 128);
+}
