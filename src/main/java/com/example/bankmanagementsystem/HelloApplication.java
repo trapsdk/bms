@@ -29,9 +29,11 @@ public class HelloApplication extends Application {
     Scene landingPage;
     @Override
     public void start(Stage stage) throws IOException {
+        Database myDatabase = new Database();
         stage.setAlwaysOnTop(true);
         landingPage = setLandingPage();
         setMainMenu(stage);
+
 //        stage.setScene(landingPage);
 //        stage.show();
     }
@@ -65,7 +67,11 @@ public class HelloApplication extends Application {
         v.getChildren().addAll(logo,user, pass, login);
         v.setAlignment(Pos.CENTER);
         root.setCenter(v);
-        login.setOnAction(ActionEvent -> stage.setScene(landingPage));
+        login.setOnAction(ActionEvent ->
+
+                stage.setScene(landingPage));
+
+
         root.getStylesheets().add("style.css");
         stage.initStyle(StageStyle.UTILITY);
         stage.setResizable(false);
