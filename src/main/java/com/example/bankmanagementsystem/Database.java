@@ -1,10 +1,12 @@
 package com.example.bankmanagementsystem;
 import java.io.File;
-import java.util.HashMap;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.Scanner;
 public class Database {
     LinkedList<Node> accountList;
+    ClassLoader classLoader;
+    Scanner fileInput;
     class Node{
         String username;
         String password;
@@ -23,12 +25,13 @@ public class Database {
             return password;
         }
     }
-    Scanner fileInput;
-
     Database() {   // OPEN USERNAMES.TXT AND ADD TO LINKED LIST EVERYTIME PROJECT IS OPENED
         accountList = new LinkedList<>();
+        classLoader = getClass().getClassLoader();
+        URL resource = classLoader.getResource("usernames.txt");
+
         try {
-            File file = new File("/Users/gabrielcortez/IdeaProjects/CS244-FinalProject/src/main/resources/usernames.txt");
+            File file = new File(resource.toURI());
             fileInput = new Scanner(file);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -50,16 +53,14 @@ public class Database {
             System.out.println("[" + accountList.get(i).getUsername() + "]");
         }
     }
-
     public boolean hasUsername(String target){  // ADD FUNCTION TO SEARCH LIST FOR USERNAME AND PASSWORD MATCHES
         for (Node node : accountList) {
-            if (node.username.equalsIgnoreCase(target)) {
+            if (node.username.equals(target)) {
                 return true;
             }
         }
         return false;
     }
-
     // SINCE I DON'T HAVE A CREATE ACCOUNT FUNCTION THAT ALLOWS USERS TO CREATE PASSWORDS,
     // A LINKED LIST OF STRINGS WOULD BE BETTER HERE OR EVEN AN ARRAY OF STRINGS, HOWEVER,
     // USING DATA NODES IT ALLOWS DYNAMICALLY TO ADD PASSWORD CREATION IN THE FUTURE

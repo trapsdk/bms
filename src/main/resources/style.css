@@ -4,15 +4,34 @@
 .button{
     -fx-font-family: Calibri;
 }
-.menu-bar{
-    -fx-background-color: linear-gradient(to left, #737EE6, #73B4E6);
-    -fx-border-color: rgb(128, 128, 128);
-}
-.menu{
-    -fx-text-fill: white;
-    -fx-font-family: Calibri;
-}
 VBox{
     -fx-background-color: linear-gradient( #737EE6, #73B4E6);
-    -fx-border-color: rgb(128, 128, 128);
+    -fx-border-color: linear-gradient(to right, #737EE6, #73B4E6);
 }
+#landing-buttons{
+    -fx-background-color:
+            #000000,
+            linear-gradient(#7ebcea, #2f4b8f),
+            linear-gradient(#426ab7, #263e75),
+            linear-gradient(#395cab, #223768);
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 12 30 12 30;
+    -fx-text-fill: white;
+    -fx-font-size: 20;
+}
+#landing-buttons:hover{
+    -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+#logout-button{
+    -fx-background-color: linear-gradient(#ff5400, #be1d00);
+    -fx-background-radius: 30;
+    -fx-background-insets: 0;
+    -fx-text-fill: white;
+    -fx-font-size: 20;
+}
+#logout-button:hover{
+    -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
