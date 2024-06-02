@@ -18,7 +18,7 @@ VBox{
     -fx-background-radius: 3,2,2,2;
     -fx-padding: 12 30 12 30;
     -fx-text-fill: white;
-    -fx-font-size: 20;
+    -fx-font-size: 15;
 }
 #landing-buttons:hover{
     -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );

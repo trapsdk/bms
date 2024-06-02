@@ -11,15 +11,20 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
 // READ USERNAME FILE INTO A DATA STRUCTURE, DE LIMITER IS "," // DONE
@@ -45,8 +50,8 @@ public class HelloApplication extends Application {
     Database myDatabase;
     @Override
     public void start(Stage stage) throws IOException {
-        myDatabase = new Database();
         stage.setAlwaysOnTop(true);
+        myDatabase = new Database();
         landingPage = setLandingPage(stage);
         mainMenu = setMainMenu(stage);
         stage.setScene(mainMenu);
@@ -57,7 +62,7 @@ public class HelloApplication extends Application {
         launch();
     }
     private Scene setMainMenu(Stage stage){
-        // CREATING LOGIN UI
+        // CREATING LOGIN UI/BUTTONS
         Image image = new Image("bms.png");
         ImageView logo = new ImageView(image);
         BorderPane root = new BorderPane();
@@ -66,7 +71,6 @@ public class HelloApplication extends Application {
         TextField pass = new TextField();
         Button login = new Button("LOGIN");
         VBox v = new VBox();
-
         // SETTING UP BUTTON AND TEXT FIELD SETTINGS
         user.setMaxSize(200,200);
         pass.setMaxSize(200,200);
@@ -75,15 +79,16 @@ public class HelloApplication extends Application {
         pass.setTranslateY(-20);
         login.setTranslateY(-20);
         login.setDefaultButton(true);
+        login.setId("landing-buttons");
         user.setPromptText("Enter Username");
         pass.setPromptText("Enter Password");
         user.getStylesheets().add("style.css");
-
         // MORE PANE SETTINGS/MERGING PANES
         v.setSpacing(10);
         v.getChildren().addAll(logo,user, pass, login);
         v.setAlignment(Pos.CENTER);
         root.setCenter(v);
+        // SETTING BUTTON ACTION
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -95,7 +100,9 @@ public class HelloApplication extends Application {
                 pass.setText("");
 
                 if (myDatabase.hasUsername(userInfo) && passInfo.equals("CS244")){
-                    stage.setScene(landingPage);
+                    myDatabase.setAccountName(userInfo);
+                    Scene temp = setLandingPage(stage);
+                    stage.setScene(temp);
                 }else{
                     Label label = new Label("You're Username & Password don't Match!");
                     label.setTextFill(Color.RED);
@@ -109,6 +116,7 @@ public class HelloApplication extends Application {
             }
         });
 
+        // RETURNING MAIN SCENE AND SETTING WINDOW TO "UTILITY"
         root.getStylesheets().add("style.css");
         stage.initStyle(StageStyle.UTILITY);
         stage.setResizable(false);
@@ -116,40 +124,85 @@ public class HelloApplication extends Application {
         return mainMenu;
     }
     private Scene setLandingPage(Stage stage){
-        // STARTING POINT FOR WINDOW
+        // STARTING ROOT FOR WINDOW
         BorderPane landingRoot = new BorderPane();
         landingRoot.getStylesheets().add("style.css");
 
-        Button checking = new Button("Checking");
-        Button savings = new Button("Savings");
-        Button logout = new Button("Logout");
+                    // CENTER PANE CODE FOR DATE, NAME, BALANCES, AND BUTTONS
+        // CREATING PANES AND BUTTONS FOR CENTER GRIDPANE
+        GridPane landingMain = new GridPane();
+        landingMain.setGridLinesVisible(true);
+        String currentDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+        Label dateLabel = new Label("Today's Date: " + currentDate);
+        dateLabel.setFont(Font.font(20));
+
+            // TEMP LABELS FOR MIDDLE CURRENTLY
+            // WILL ADD BALANCE INFO HERE AND SPENDING METRIC
+        Label tempOne = new Label("null");
+        Label tempTwo = new Label("nullTwo");
+        tempOne.setAlignment(Pos.CENTER);
+        tempOne.setPrefSize(330,300);
+        tempTwo.setAlignment(Pos.CENTER);
+        tempTwo.setPrefSize(330,300);
+        landingMain.add(tempOne, 0,1);
+        landingMain.add(tempTwo, 1,1);
+
+        // THIRD ROW OF GRID PANE
         Button depositBtn = new Button("Deposit");
         Button withdrawBtn = new Button("Withdraw");
-        Button statementBtn = new Button("Statements");
+        depositBtn.setId("landing-buttons");
+        withdrawBtn.setId("landing-buttons");
+        depositBtn.setTranslateX(70);
+        withdrawBtn.setTranslateX(70);
+        depositBtn.setPrefSize(200,80);
+        withdrawBtn.setPrefSize(200,80);
+        depositBtn.setFont(Font.font(20));
+        withdrawBtn.setFont(Font.font(20));
+        landingMain.add(depositBtn,0,2);
+        landingMain.add(withdrawBtn, 1,2);
+
+
+        Label currName = new Label("Welcome back, " + myDatabase.getAccountName());
+        currName.setFont(Font.font(20));
+        currName.setPrefSize(330,100);
+        currName.setMaxSize(330,100);
+        currName.setAlignment(Pos.CENTER);
+        landingMain.add(currName, 0,0);
+        landingMain.add(dateLabel, 1,0);
+        Group gridPaneGroup = new Group();
+        gridPaneGroup.setTranslateY(0);
+        gridPaneGroup.getChildren().add(landingMain);
+
+                    // LEFT MENU SIDE CODE
+        // CREATING LEFT MENU BUTTONS
         VBox options = new VBox();
         options.setPrefSize(140,500);
-        Group g = new Group();
-        g.getChildren().add(options);
-
-        logout.setOnAction(ActionEvent -> {
-            stage.setScene(mainMenu);
-        });
-
-
+        Group vboxGroup = new Group();
+        Button checking = new Button("Checking");
+        Button savings = new Button("Savings");
+        Button statementBtn = new Button("Statements");
+        Button logout = new Button("Logout");
+        // EDITING LEFT MENU BUTTONS AND SIZE
+        statementBtn.setId("landing-buttons");
         logout.setId("logout-button");
         savings.setId("landing-buttons");
         checking.setId("landing-buttons");
+        statementBtn.setPrefSize(140,50);
         checking.setPrefSize(140,50);
         savings.setPrefSize(140,50);
         logout.setPrefSize(140,50);
-        options.setSpacing(100);
+        options.setSpacing(50);
         options.setAlignment(Pos.CENTER);
-
-        options.getChildren().addAll(checking,savings,logout);
-
-//        landingRoot.setTop(menuBar);
-        landingRoot.setLeft(g);
-
+        // SETTING BUTTON FUNCTIONS FOR LEFT SIDE MENU
+        logout.setOnAction(ActionEvent -> {
+            stage.setScene(mainMenu);
+        });
+        // ADDING ALL CHILDREN TO THEIR RESPECTIVE PANES/SIDES
+        vboxGroup.getChildren().add(options);
+        options.getChildren().addAll(checking,savings,statementBtn,logout);
+        landingRoot.setLeft(vboxGroup);
+        landingRoot.setCenter(gridPaneGroup);
+        // CREATING SCENE AND RETURNING THE WINDOW
         landingPage = new Scene(landingRoot, 800,500);
         landingPage.getStylesheets().add("style.css");
         return landingPage;
