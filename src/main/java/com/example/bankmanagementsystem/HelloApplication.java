@@ -98,7 +98,7 @@ public class HelloApplication extends Application {
                 user.setText("");
                 pass.setText("");
 
-                if (passInfo.equals("CS244")){
+                if (myDatabase.hasUsername(userInfo) && passInfo.equals("CS244")){
                     myDatabase.setAccountName(userInfo);
                     Scene temp = setLandingPage(stage);
                     stage.setScene(temp);
