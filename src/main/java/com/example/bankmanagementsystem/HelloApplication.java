@@ -31,8 +31,8 @@ import java.util.concurrent.BlockingQueue;
 // PASSWORD - CS244 // DONE
 // LOGIN BUTTON DOES POPUP IF THEY DONT MATCH, SCENE SWITCH IF THEY DO // DONE
 
-// LOGOUT MENU BUTTON GOES BACK T0 MAIN MENU
-// DISPLAY WELCOME NAME, AND SHOW BALANCES
+// LOGOUT MENU BUTTON GOES BACK T0 MAIN MENU // DONE
+// DISPLAY WELCOME NAME, AND SHOW BALANCES // DONE KINDA
 
 
 // CREATE OBJECTS BASED OFF NAME AND SAVE TO FILE WITH THERE 'STATEMENTS'
@@ -41,7 +41,6 @@ import java.util.concurrent.BlockingQueue;
 // WITHDRAW BUTTON REMOVES FROM BALANCE. WITH SMALL DESCRIPTION
 
 // STATEMENTS READS DEPOSITS AND WITHDRAWALS FROM FILE INTO LINKED LIST.
-
 
 
 public class HelloApplication extends Application {
@@ -99,7 +98,7 @@ public class HelloApplication extends Application {
                 user.setText("");
                 pass.setText("");
 
-                if (myDatabase.hasUsername(userInfo) && passInfo.equals("CS244")){
+                if (passInfo.equals("CS244")){
                     myDatabase.setAccountName(userInfo);
                     Scene temp = setLandingPage(stage);
                     stage.setScene(temp);
@@ -131,21 +130,23 @@ public class HelloApplication extends Application {
                     // CENTER PANE CODE FOR DATE, NAME, BALANCES, AND BUTTONS
         // CREATING PANES AND BUTTONS FOR CENTER GRIDPANE
         GridPane landingMain = new GridPane();
-        landingMain.setGridLinesVisible(true);
+//        landingMain.setGridLinesVisible(true);
         String currentDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
         Label dateLabel = new Label("Today's Date: " + currentDate);
         dateLabel.setFont(Font.font(20));
 
             // TEMP LABELS FOR MIDDLE CURRENTLY
             // WILL ADD BALANCE INFO HERE AND SPENDING METRIC
-        Label tempOne = new Label("null");
-        Label tempTwo = new Label("nullTwo");
-        tempOne.setAlignment(Pos.CENTER);
-        tempOne.setPrefSize(330,300);
-        tempTwo.setAlignment(Pos.CENTER);
-        tempTwo.setPrefSize(330,300);
-        landingMain.add(tempOne, 0,1);
-        landingMain.add(tempTwo, 1,1);
+        Label balanceLabel = new Label("Checking Balance: $" + myDatabase.checking.balance);
+        Label interestLabel = new Label("Checking Interest Rate: " + myDatabase.checking.interest + "%");
+        balanceLabel.setAlignment(Pos.CENTER);
+        balanceLabel.setFont(Font.font(20));
+        balanceLabel.setPrefSize(330,300);
+        interestLabel.setAlignment(Pos.CENTER);
+        interestLabel.setFont(Font.font(20));
+        interestLabel.setPrefSize(330,300);
+        landingMain.add(balanceLabel, 0,1);
+        landingMain.add(interestLabel, 1,1);
 
         // THIRD ROW OF GRID PANE
         Button depositBtn = new Button("Deposit");
@@ -161,7 +162,7 @@ public class HelloApplication extends Application {
         landingMain.add(depositBtn,0,2);
         landingMain.add(withdrawBtn, 1,2);
 
-
+        // NAME RETRIEVAL FOR WELCOME TEXT
         Label currName = new Label("Welcome back, " + myDatabase.getAccountName());
         currName.setFont(Font.font(20));
         currName.setPrefSize(330,100);
@@ -169,9 +170,7 @@ public class HelloApplication extends Application {
         currName.setAlignment(Pos.CENTER);
         landingMain.add(currName, 0,0);
         landingMain.add(dateLabel, 1,0);
-        Group gridPaneGroup = new Group();
-        gridPaneGroup.setTranslateY(0);
-        gridPaneGroup.getChildren().add(landingMain);
+
 
                     // LEFT MENU SIDE CODE
         // CREATING LEFT MENU BUTTONS
@@ -193,10 +192,50 @@ public class HelloApplication extends Application {
         logout.setPrefSize(140,50);
         options.setSpacing(50);
         options.setAlignment(Pos.CENTER);
+        TextInputDialog td = new TextInputDialog();
+
         // SETTING BUTTON FUNCTIONS FOR LEFT SIDE MENU
+        checking.setOnAction(ActionEvent-> {
+            balanceLabel.setText("Checking Balance: $" + myDatabase.checking.balance);
+            interestLabel.setText("Checking Interest Rate: " + myDatabase.checking.interest + "%");
+        });
+        savings.setOnAction(ActionEvent -> {
+            balanceLabel.setText("Savings Balance: $" + myDatabase.savings.balance);
+            interestLabel.setText("Savings Interest Rate: " + myDatabase.savings.interest + "%");
+        });
         logout.setOnAction(ActionEvent -> {
             stage.setScene(mainMenu);
         });
+        // SETTING BUTTON FUNCTIONS FOR BOTTOM MENU
+        depositBtn.setOnAction(ActionEvent -> {
+            // add popup for amount of money with description
+            if (balanceLabel.getText().contains("Checking") ){
+
+                myDatabase.checking.balance += 500;
+                balanceLabel.setText("Checking Balance: $" + myDatabase.checking.balance);
+            }else{
+                myDatabase.savings.balance += 500;
+                balanceLabel.setText("Savings Balance: $" + myDatabase.savings.balance);
+            }
+        });
+
+        withdrawBtn.setOnAction(ActionEvent -> {
+            // add popup for amount of money
+            if (balanceLabel.getText().contains("Checking") ){
+                myDatabase.checking.balance -= 500;
+                balanceLabel.setText("Checking Balance: $" + myDatabase.checking.balance);
+            }else{
+                myDatabase.savings.balance -= 500;
+                balanceLabel.setText("Savings Balance: $" + myDatabase.savings.balance);
+            }
+        });
+
+
+        // GRID PANE GROUP TO ADD TO SCENE LATER
+        Group gridPaneGroup = new Group();
+        gridPaneGroup.setTranslateY(0);
+        gridPaneGroup.getChildren().addAll(landingMain);
+
         // ADDING ALL CHILDREN TO THEIR RESPECTIVE PANES/SIDES
         vboxGroup.getChildren().add(options);
         options.getChildren().addAll(checking,savings,statementBtn,logout);

@@ -1,33 +1,15 @@
 package com.example.bankmanagementsystem;
 import java.io.File;
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.Scanner;
 public class Database {
-    LinkedList<Node> accountList;
+    LinkedList<String> accountList;
     ClassLoader classLoader;
     Scanner fileInput;
     String accountName;
     Account checking;
     Account savings;
-    class Node{
-        String username;
-        String password;
-        Node(){
-            username = null;
-            password = null;
-        }
-        Node(String user, String pass){
-            username = user;
-            password = pass;
-        }
-        public String getUsername(){
-            return username;
-        }
-        public String getPassword(){
-            return password;
-        }
-    }
+
     class Account{
         double balance;
         float interest;
@@ -61,8 +43,7 @@ public class Database {
     public void initiateDatabase(){ // GRABBING USERNAMES AND STORING THEM IN LINKED LIST OF DATA NODES
         while( fileInput.hasNext() ){
             String tempLine = fileInput.nextLine();
-            Node temp = new Node(tempLine, "CS244");
-            accountList.add(temp);
+            accountList.add(tempLine, "CS244");
         }
         fileInput.close();
         printDatabase();
@@ -70,17 +51,19 @@ public class Database {
     public void printDatabase(){  // PRINTING USERNAME DATABASE
         System.out.println("-- Username Database --");
         for ( int i = 0; i < accountList.size(); i++){
-            System.out.println("[" + accountList.get(i).getUsername() + "]");
+
+
+            System.out.println("[" + accountList.get(i) + "]");
         }
     }
-    public boolean hasUsername(String target){  // ADD FUNCTION TO SEARCH LIST FOR USERNAME AND PASSWORD MATCHES
-        for (Node node : accountList) {
-            if (node.username.equals(target)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean hasUsername(String target){  // ADD FUNCTION TO SEARCH LIST FOR USERNAME AND PASSWORD MATCHES
+//        for (String node : accountList) {
+//            if (node.equals(target)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public void setAccountName(String name){
         accountName = name;
