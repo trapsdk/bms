@@ -35,3 +35,16 @@ VBox{
     -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
 
+#money{
+    -fx-text-fill: green;
+}
+.list-view .list-cell:even {
+    /*-fx-background-color: linear-gradient(to left, #737EE6, #73B4E6);*/
+    /*-fx-text-fill: black;*/
+    -fx-font-size: 20;
+}
+.list-view .list-cell:odd {
+    /*-fx-background-color: linear-gradient(to left,#7ebcea, #2f4b8f);*/
+    /*-fx-text-fill: black;*/
+    -fx-font-size: 20;
+}

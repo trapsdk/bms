@@ -2,3 +2,5 @@
 Check Deposit
 -1000
 ATM Withdrawal
++2000
+Employee Deposit
