@@ -1,0 +1,16 @@
++500
+Check Deposit
+-1000
+ATM Withdrawal
++2000
+Employee Deposit
+-24.44
+Snacks
++1200
+Employee Deposit
+-1840.44
+Rent
+-110.22
+Drinks at Bar
++400
+Sold Xbox

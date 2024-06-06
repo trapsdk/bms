@@ -2,8 +2,7 @@ package com.example.bankmanagementsystem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
-
-import java.io.File;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,19 +12,39 @@ public class Database { // MAIN DATABASE CLASS
     LinkedList<Client> accountList;
     ClassLoader classLoader;
     Scanner fileInput;
-    Client currentClient;
-
+    private Client currentClient;
+    private ObservableList<String> statementsObs;
+    private ListView<String> statementListView;
     Database() {    // CREATING DATA BASE OBJECT, CREATING NEW ACCOUNT LIST, CREATING NEW DEFAULT CURR CLIENT, AND THEN LOADING FILES
         accountList = new LinkedList<>();
         currentClient = new Client();
         loadUsers();
     }
+    public void createNewUser(String newUser){
+        PrintWriter out = null;
+        classLoader = getClass().getClassLoader();
+        URL resource = null;
+        resource = classLoader.getResource("usernames.txt");
+        try {
+            File file = new File(resource.getPath());
+            FileWriter fileWriter = new FileWriter(file, true);
+            out = new PrintWriter(fileWriter);
+            out.println();
+            out.write(newUser);
+            out.close();
+        }
+        catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        accountList.add(new Client(newUser, "CS244"));
+    }
     public void loadUsers(){ /// LOADING USERNAMES INTO ACCOUNT LIST
         classLoader = getClass().getClassLoader();
         URL resource = null;
-        resource = classLoader.getResource("bankmanagementsystem/usernames.txt");
+        resource = classLoader.getResource("usernames.txt");
         try {
-            File file = new File("/Users/gabrielcortez/IdeaProjects/CS244-FinalProject/src/main/resources/com/example/bankmanagementsystem/usernames.txt");
+            File file = new File(resource.getPath());
+            System.out.println(file.getAbsolutePath());
             fileInput = new Scanner(file);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -37,15 +56,12 @@ public class Database { // MAIN DATABASE CLASS
         fileInput.close();
         printDatabase();
     }
-
-
-    // NEED TO CREATE WAY TO STORE ACCOUNTS BALANCE SHEETS WITH WRITING NEW FILES // kinda done, fixing buttons rn
     public void loadBalanceSheet(){ // LOADING BALANCE SHEET
         classLoader = getClass().getClassLoader();
         URL resource = null;
-        resource = classLoader.getResource("bankmanagementsystem/usernames.txt");
+        resource = classLoader.getResource("balancesheet.txt");
         try {
-            File file = new File("/Users/gabrielcortez/IdeaProjects/CS244-FinalProject/src/main/resources/com/example/bankmanagementsystem/balancesheet.txt");
+            File file = new File(resource.getPath());
             fileInput = new Scanner(file);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -54,14 +70,16 @@ public class Database { // MAIN DATABASE CLASS
             String tempAmount = fileInput.nextLine();
             String tempDescription = fileInput.nextLine();
             System.out.println("[" + tempAmount + " : " + tempDescription + "]"); // debug line
-            currentClient.checking.balanceSheet.add(new BalanceSheetSet(tempAmount, tempDescription));
+            currentClient.getChecking().balanceSheet.add(new BalanceSheetSet(tempAmount, tempDescription));
         }
         double balanceSum = 0;
         BalanceSheetSet temp;
-        for ( int i = 0; i < currentClient.checking.balanceSheet.size(); i++){
-            temp = currentClient.checking.balanceSheet.get(i);
-            char sign = temp.amount.charAt(0);
-            String amountParse = temp.amount.substring(1);
+
+        // GETTING SUM OF BALANCE SHEET
+        for ( int i = 0; i < currentClient.getChecking().balanceSheet.size(); i++){
+            temp = currentClient.getChecking().balanceSheet.get(i);
+            char sign = temp.getAmount().charAt(0);
+            String amountParse = temp.getAmount().substring(1);
             double balanceParse = Double.parseDouble(amountParse);
             if ( sign == '+' ){
                 balanceSum += balanceParse;
@@ -69,26 +87,37 @@ public class Database { // MAIN DATABASE CLASS
                 balanceSum -= balanceParse;
             }
         }
-        currentClient.checking.balance = balanceSum;
+        currentClient.getChecking().setBalance(balanceSum);
     }
-    public ListView<String> listViewSetUp(){
+    public void listViewSetUp(){
         List<String> y = new ArrayList<>();
-        for( int i = 0; i < currentClient.checking.balanceSheet.size(); i++){
-            y.add(currentClient.checking.balanceSheet.get(i).amount + " : "
-            + currentClient.checking.balanceSheet.get(i).description);
+        for( int i = 0; i < currentClient.getChecking().balanceSheet.size(); i++){
+            y.add(currentClient.getChecking().balanceSheet.get(i).getAmount() + " : "
+            + currentClient.getChecking().balanceSheet.get(i).getDescription());
         }
-        ObservableList<String> temp = FXCollections.observableList(y);
-        return new ListView<>(temp);
+        statementsObs = FXCollections.observableList(y);
+        statementListView = new ListView<>(statementsObs);
+    }
+    public void addToListView(String input){
+        statementsObs.add(input);
+    }
+    public ListView<String> getStatementList(){
+        return statementListView;
     }
     public void printDatabase(){  // PRINTING USERNAMES IN  DATABASE
         System.out.println("-- Username Database --");
         for (Client client : accountList) {
-            System.out.println("[" + client.username + "]");
+            System.out.println("[" + client.getUsername() + "]");
+        }
+    }
+    public void printBalanceSheet(){
+        for (String statementsOb : statementsObs) {
+            System.out.println(statementsOb);
         }
     }
     public boolean hasUsername(String target){  // ADD FUNCTION TO SEARCH LIST FOR USERNAME AND PASSWORD MATCHES
         for (Client client : accountList) {
-            if (target.equals(client.username)) {
+            if (target.equals(client.getUsername())) {
                 return true;
             }
         }
@@ -96,7 +125,7 @@ public class Database { // MAIN DATABASE CLASS
     }
     public void setCurrentClient(String target){    // FINDING CLIENT IN ACCOUNT LIST AND SETTING AS CURRENT
         for (Client curr : accountList){
-            if ( curr.username.equals(target)){
+            if ( curr.getUsername().equals(target)){
                 currentClient = curr;
             }
         }
@@ -104,12 +133,5 @@ public class Database { // MAIN DATABASE CLASS
     public Client getCurrentClient(){   // RETURN CLIENT
         return currentClient;
     }
-
-    // SINCE I DON'T HAVE A CREATE ACCOUNT FUNCTION THAT ALLOWS USERS TO CREATE PASSWORDS,
-    // A LINKED LIST OF STRINGS WOULD BE BETTER HERE OR EVEN AN ARRAY OF STRINGS, HOWEVER,
-    // USING DATA NODES IT ALLOWS DYNAMICALLY TO ADD PASSWORD CREATION IN THE FUTURE
-    // IF I HAVE THE TIME I WILL CREATE THIS.
-    // IF EXTRA TIME, WRITE FUNCTION TO CREATE ACCOUNTS ( WRITE TO USERNAMES .TXT)
-    // NEED TO LOAD USERS AGAIN AFTER CREATING ACCOUNT
 
 }

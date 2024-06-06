@@ -24,14 +24,14 @@ VBox{
     -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
 
-#logout-button{
+#red-button{
     -fx-background-color: linear-gradient(#ff5400, #be1d00);
     -fx-background-radius: 30;
     -fx-background-insets: 0;
     -fx-text-fill: white;
     -fx-font-size: 20;
 }
-#logout-button:hover{
+#red-button:hover{
     -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
 
